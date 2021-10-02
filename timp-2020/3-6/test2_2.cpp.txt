@@ -1,0 +1,81 @@
+res=func2(file)
+
+res: >0 - сумма чисел
+	-1 - infile error
+	-3 - format error
+	
+-----file_in_correct1-----
+1.5 2.5
+3.0
+2 2,5
+-----------
+9.5
+
+----file_in_correct2-----
+1.5 2.5
+-------
+4
+
+----file_in_correct3-----
+0
+-------
+0
+
+----file_in_incorrect1-----
+qrqefasd
+-------------------
+
+----file_in_incorrect2-----
+-1.5 2.5
+-------
+
+---file_in_empty----
+----
+
+TEST_CASE("test_correct","[func2][correct]")
+{
+	in1=file_in_correct1
+	in2=file_in_correct2
+	in3=file_in_correct3
+		
+	CHECK_NOTHROW(res1=func2(in1))
+	CHECK_NOTHROW(res2=func2(in2))
+	CHECK_NOTHROW(res3=func2(in3))
+	
+	CHECK(res1>0)
+	CHECK(res1==9.5)
+	CHECK(res2>0)
+	CHECK(res2==4)
+	CHECK(res3==0)
+	
+}
+TEST_CASE("test_incorrect","[func2][incorrect]")
+{
+	in1=file_in_incorrect1
+	in2=file_in_incorrect2
+	in3=file_not_exist
+	
+	CHECK_NOTHROW(res1=func2(in1))
+	CHECK_NOTHROW(res2=func2(in2))
+	CHECK_NOTHROW(res3=func2(in3))
+	
+	CHECK(res1<0)
+	CHECK(res1==-3)
+	CHECK(res2<0)
+	CHECK(res2==-3)
+	CHECK(res3<0)
+	CHECK(res3==-1)
+}
+TEST_CASE("test_empty","[func2][empty]")
+{
+	in1=file_in_empty
+	in2=""
+	
+	CHECK_NOTHROW(res1=func2(in1))
+	CHECK(res1<0)
+	CHECK(res1==-3)
+	
+	CHECK_NOTHROW(res2=func2(in2))
+	CHECK(res2<0)
+	CHECK(res2==-1)
+}
